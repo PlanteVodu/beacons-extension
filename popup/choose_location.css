@@ -44,12 +44,12 @@ input, select.location_recent_folders {
 	overflow: auto;
 }
 
-.sub-container {
+.folder {
 	padding-left: 12px;
 	display: none;
 }
 
-.opened > .sub-container {
+.opened > .folder {
 	display: block;
 }
 
@@ -61,6 +61,11 @@ input, select.location_recent_folders {
 
 .option:hover {
 	background-color: #ededf0;
+}
+
+.option.selected {
+	color: white;
+	background-color: #0a84ff;
 }
 
 .option-title {

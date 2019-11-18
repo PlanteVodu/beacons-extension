@@ -91,9 +91,9 @@ const beacons = [
 const el = document.getElementById('location_all_folder');
 
 function addSlides(beacons) {
-  beacons.forEach(slide => {
+  for(let slide of beacons) {
     addOption(el, slide);
-  });
+  };
 }
 
 function addOption(parent, data) {
@@ -113,6 +113,16 @@ function addOption(parent, data) {
     optToggler.innerHTML = '❯';
     optToggler.classList.add('folder-icon');
     opt.appendChild(optToggler);
+  } else {
+    opt.classList.add('last-option');
+    opt.addEventListener('click', function(event) {
+      event.stopPropagation();
+      let lastOptions = document.getElementsByClassName('last-option');
+      for (let element of lastOptions) {
+        element.classList.remove('selected');
+      }
+      opt.classList.add('selected');
+    });
   }
 
   let title = document.createElement('div');
@@ -123,15 +133,12 @@ function addOption(parent, data) {
   container.appendChild(opt);
 
   if (data.content) {
-    let subContainer = document.createElement('div');
-    subContainer.classList.add('sub-container');
-
-    data.content.forEach(sub => {
-      console.log("sub:", sub);
-      addOption(subContainer, sub);
-    });
-
-    container.appendChild(subContainer);
+    let folderContainer = document.createElement('div');
+    folderContainer.classList.add('folder');
+    for(let folder of data.content) {
+      addOption(folderContainer, folder);
+    };
+    container.appendChild(folderContainer);
   }
 
   parent.appendChild(container);
