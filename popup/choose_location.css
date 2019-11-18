@@ -36,7 +36,7 @@ input, select.location_recent_folders {
 }
 
 .location_all_folders {
-	height: 96px;
+	height: 164px;
 	width: 80%;
 	border: 1px solid #737373;
 	box-sizing: border-box;
@@ -44,19 +44,26 @@ input, select.location_recent_folders {
 	overflow: auto;
 }
 
+.sub-container {
+	padding-left: 12px;
+	display: none;
+}
 
+.opened > .sub-container {
+	display: block;
+}
 
-.selector {
+.option {
 	vertical-align: middle;
 	cursor: pointer;
 	padding-left: 8px;
 }
 
-.selector:hover {
+.option:hover {
 	background-color: #ededf0;
 }
 
-.selector-title {
+.option-title {
 	display: inline-block;
 	font-size: 13px;
 	/*height: 24px;*/
@@ -71,7 +78,7 @@ input, select.location_recent_folders {
 	/*padding-right: 2px;*/
 }
 
-.selector.opened > .folder-icon {
+.option.opened > .folder-icon {
 	transform: rotate(90deg);
 }
 

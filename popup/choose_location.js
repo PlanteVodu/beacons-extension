@@ -6,10 +6,26 @@ const beacons = [
         title: 'Général',
         content: [
           {
-            title: 'Favoris'
+            title: 'Général',
+            content: [
+              {
+                title: 'Favoris'
+              },
+              {
+                title: 'Actualité'
+              }
+            ]
           },
           {
-            title: 'Actualité'
+            title: 'LMD',
+            content: [
+              {
+                title: 'A lire'
+              },
+              {
+                title: 'Lu'
+              }
+            ]
           }
         ]
       },
@@ -76,25 +92,49 @@ const el = document.getElementById('location_all_folder');
 
 function addSlides(beacons) {
   beacons.forEach(slide => {
-    let slideOpt = document.createElement('div');
-    slideOpt.classList.add('selector', 'slide-selector');
-    slideOpt.addEventListener('click', function() {
-      slideOpt.classList.toggle('opened');
+    addOption(el, slide);
+  });
+}
+
+function addOption(parent, data) {
+  let container = document.createElement('div');
+
+  let opt = document.createElement('div');
+  opt.classList.add('option');
+
+  if (data.content) {
+    opt.addEventListener('click', function(event) {
+      event.stopPropagation();
+      container.classList.toggle('opened');
+      opt.classList.toggle('opened');
     });
 
-    let slideOptToggler = document.createElement('div');
-    slideOptToggler.innerHTML = '❯';
-    slideOptToggler.classList.add('folder-icon');
+    let optToggler = document.createElement('div');
+    optToggler.innerHTML = '❯';
+    optToggler.classList.add('folder-icon');
+    opt.appendChild(optToggler);
+  }
 
-    let slideTitle = document.createElement('div');
-    slideTitle.innerHTML = slide.title;
-    slideTitle.classList.add('selector-title');
+  let title = document.createElement('div');
+  title.innerHTML = data.title;
+  title.classList.add('option-title');
 
-    slideOpt.appendChild(slideOptToggler);
-    slideOpt.appendChild(slideTitle);
+  opt.appendChild(title);
+  container.appendChild(opt);
 
-    el.appendChild(slideOpt);
-  });
+  if (data.content) {
+    let subContainer = document.createElement('div');
+    subContainer.classList.add('sub-container');
+
+    data.content.forEach(sub => {
+      console.log("sub:", sub);
+      addOption(subContainer, sub);
+    });
+
+    container.appendChild(subContainer);
+  }
+
+  parent.appendChild(container);
 }
 
 addSlides(beacons);
