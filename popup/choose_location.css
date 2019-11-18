@@ -1,0 +1,102 @@
+body {
+  width: 400px;
+  height: 350px;
+  padding: 0;
+  font-family: "Tahoma";
+}
+
+form {
+	padding: 4px;
+}
+
+label, input, select {
+	clear: both;
+	display: block;
+	margin: 8px;
+	width: 80%;
+	box-sizing: border-box;
+}
+
+option {
+	box-sizing: border-box;
+	vertical-align: middle;
+
+}
+
+label {
+	font-size: 15px;
+}
+
+input, select {
+	padding-left: 4px;
+}
+
+input, select.location_recent_folders {
+	height: 24px;
+}
+
+.location_all_folders {
+	height: 96px;
+	width: 80%;
+	border: 1px solid #737373;
+	box-sizing: border-box;
+	margin: 8px;
+	overflow: auto;
+}
+
+
+
+.selector {
+	vertical-align: middle;
+	cursor: pointer;
+	padding-left: 8px;
+}
+
+.selector:hover {
+	background-color: #ededf0;
+}
+
+.selector-title {
+	display: inline-block;
+	font-size: 13px;
+	/*height: 24px;*/
+	padding: 4px;
+}
+
+.folder-icon {
+	display: inline-block;
+	content: '❯';
+	font-size: 11px;
+	/*padding-left: 8px;*/
+	/*padding-right: 2px;*/
+}
+
+.selector.opened > .folder-icon {
+	transform: rotate(90deg);
+}
+
+
+
+button {
+	border: 0;
+}
+
+.add-bookmark {
+	width: 50%;
+	height: 40px;
+	color: white;
+	background-color: #0060df;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+.remove-bookmark {
+	width: 50%;
+	height: 40px;
+	color: white;
+	background-color: #6d6d71;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}

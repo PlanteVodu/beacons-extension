@@ -8,7 +8,8 @@
   },
   "browser_action": {
     "default_icon": "icons/icon-empty.png",
-    "default_title": "Beacons"
+    "default_title": "Beacons",
+    "default_popup": "popup/choose_location.html"
   },
   "permissions": [
     "tabs"
