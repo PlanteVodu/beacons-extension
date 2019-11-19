@@ -1,11 +1,11 @@
 body {
   width: 400px;
-  height: 452px;
+  height: 456px;
   padding: 0;
   margin: 0;
   font-family: "Tahoma";
   background-color: #4a4a4f;
-  color: white;
+  color: #f9f9fa;
 }
 
 .form-title {
@@ -16,7 +16,7 @@ body {
 }
 
 form {
-	padding: 4px;
+	padding: 8px;
 }
 
 label, input, select {
@@ -35,6 +35,7 @@ option {
 
 label {
 	font-size: 14px;
+	padding-left: 2px;
 }
 
 input, select {
@@ -101,9 +102,12 @@ input, select.location_recent_folders {
 
 
 
-button {
+.add-bookmark,
+.remove-bookmark {
 	border: 0;
 	cursor: pointer;
+	font-size: 14px;
+	transition: background-color .2s, border .2s;
 }
 
 .add-bookmark {
@@ -115,10 +119,12 @@ button {
 	position: absolute;
 	bottom: 0;
 	left: 0;
+	margin: 0;
 }
 
 .add-bookmark:hover {
 	background-color: #45a1ff;
+	border: 1px solid #98cafe;
 }
 
 .remove-bookmark {
@@ -134,4 +140,5 @@ button {
 
 .remove-bookmark:hover {
 	background-color: #ff0039;
+	border: 1px solid #ff98af;
 }
