@@ -9,7 +9,19 @@ browser.tabs
   .query({active: true, currentWindow: true})
   .then(function(tabs) {
     activeTab = tabs[0];
+    fillBookmarkInfos();
   });
+
+
+function fillBookmarkInfos() {
+  let titleInput = document.getElementById('title');
+  let urlInput = document.getElementById('url');
+
+  titleInput.value = activeTab.title;
+  titleInput.select();
+
+  urlInput.value = activeTab.url;
+}
 
 
 function getBeacons() {
@@ -43,10 +55,13 @@ function addBookmark(selectedLocation) {
   console.log("activeTab.url:", activeTab.url);
   console.log("activeTab.title:", activeTab.title);
 
+  let titleInput = document.getElementById('title');
+  let urlInput = document.getElementById('url');
+
   let url = new URL('http://localhost:5000/addbm?');
   let params = {
-    url: activeTab.url,
-    title: activeTab.title,
+    title: titleInput.value,
+    url: urlInput.value,
     boxId: selectedLocation.data.id
   }
 
