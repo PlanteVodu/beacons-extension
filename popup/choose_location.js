@@ -1,4 +1,8 @@
-const beacons = [
+console.log('Pop-up is loading!')
+
+var bookmarkInfos = null;
+
+let beacons = [
   {
     title: 'Général',
     content: [
@@ -90,14 +94,65 @@ const beacons = [
 
 const el = document.getElementById('location_all_folder');
 
+function getBeacons() {
+  const url = 'http://localhost:5000/beacons2';
+  fetch(url)
+    .then(function(response) {
+      response.json().then(function(beacons) {
+        console.log("beacons:", beacons);
+        addSlides(beacons);
+      });
+    });
+}
+
+getBeacons();
+
+// function getActiveTab() {
+
+// }
+
+
 function addSlides(beacons) {
   for(let slide of beacons) {
     addOption(el, slide);
   };
 }
 
+// Rafraîchir la liste des bookmarks à chaque fois que l'on ouvre
+// le pop-up. Le pop-up doit fermer lorsqu'on change d'onglet.
+// Mise à jour : conserver la date de dernière mise à jour
+// envoyée par le serveur, et qui correspond à la date de la
+// dernière modification effectuée sur la base de données.
+
+let selected = null;
+
+function addBookmarkToBox(boxId) {
+  console.log("Adding bookmark");
+  console.log("boxId:", boxId);
+  console.log("bookmarkInfos:", bookmarkInfos);
+
+  let url = new URL('http://localhost:5000/addbm?');
+  let params = {
+    url: bookmarkInfos.url,
+    title: bookmarkInfos.title,
+    boxId: boxId
+  }
+
+  url.search = new URLSearchParams(params).toString();
+
+  console.log("===== URL:", url);
+
+  fetch(url)
+    .then(function(response) {
+      console.log("response:", response);
+    });
+}
+
 function addOption(parent, data) {
   let container = document.createElement('div');
+
+  data.content = data.rows || data.columns || data.boxes;
+  data.name = data.name || data.title;
 
   let opt = document.createElement('div');
   opt.classList.add('option');
@@ -115,6 +170,7 @@ function addOption(parent, data) {
     opt.appendChild(optToggler);
   } else {
     opt.classList.add('last-option');
+    opt.setAttribute('box-id', data.id);
     opt.addEventListener('click', function(event) {
       event.stopPropagation();
       let lastOptions = document.getElementsByClassName('last-option');
@@ -122,11 +178,13 @@ function addOption(parent, data) {
         element.classList.remove('selected');
       }
       opt.classList.add('selected');
+      selected = data.id;
+      addBookmarkToBox(data.id);
     });
   }
 
   let title = document.createElement('div');
-  title.innerHTML = data.title;
+  title.innerHTML = data.name;
   title.classList.add('option-title');
 
   opt.appendChild(title);
@@ -144,4 +202,24 @@ function addOption(parent, data) {
   parent.appendChild(container);
 }
 
-addSlides(beacons);
+window.addEventListener('unload', function() {
+  console.log("unload!");
+  let lastOptions = document.getElementsByClassName('selected');
+  if (lastOptions.length == 0) return;
+
+  const boxId = lastOptions[0].getAttribute('box-id');
+  addBookmarkToBox(boxId);
+});
+
+browser.tabs.
+  query({active: true, currentWindow: true})
+  .then(function(tabs) {
+    // console.log("tabs:", tabs);
+    // console.log("tabs[0]:", tabs[0]);
+    console.log("tabs[0].url:", tabs[0].url);
+    console.log("tabs[0].url:", tabs[0].url);
+    bookmarkInfos = {
+      title: tabs[0].title,
+      url: tabs[0].url,
+    }
+  });
