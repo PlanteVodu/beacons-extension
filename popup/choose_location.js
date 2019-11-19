@@ -1,98 +1,16 @@
-console.log('Pop-up is loading!')
+console.log('Pop-up is loading!');
 
-var bookmarkInfos = null;
+var activeTab;
+var selectedLocation;
+var el = document.getElementById('location_all_folder');
 
-let beacons = [
-  {
-    title: 'Général',
-    content: [
-      {
-        title: 'Général',
-        content: [
-          {
-            title: 'Général',
-            content: [
-              {
-                title: 'Favoris'
-              },
-              {
-                title: 'Actualité'
-              }
-            ]
-          },
-          {
-            title: 'LMD',
-            content: [
-              {
-                title: 'A lire'
-              },
-              {
-                title: 'Lu'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        title: 'Divers',
-        content: [
-          {
-            title: 'Aides'
-          },
-          {
-            title: 'Documents'
-          }
-        ]
-      },
-      {
-        title: 'Divertissement',
-        content: [
-          {
-            title: 'Jeux'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    title: 'Développement',
-    content: [
-      {
-        title: 'Actualité',
-        content: []
-      }
-    ]
-  },
-  {
-    title: 'Cuisine',
-    content: [
-      {
-        title: 'Sites de recettes',
-        content: []
-      }
-    ]
-  },
-  {
-    title: 'Divers',
-    content: [
-      {
-        title: 'Agriculture',
-        content: []
-      }
-    ]
-  },
-  {
-    title: 'Divertissement',
-    content: [
-      {
-        title: 'Animés',
-        content: []
-      }
-    ]
-  }
-];
+// Get the current tab infos
+browser.tabs
+  .query({active: true, currentWindow: true})
+  .then(function(tabs) {
+    activeTab = tabs[0];
+  });
 
-const el = document.getElementById('location_all_folder');
 
 function getBeacons() {
   const url = 'http://localhost:5000/beacons2';
@@ -104,13 +22,7 @@ function getBeacons() {
       });
     });
 }
-
 getBeacons();
-
-// function getActiveTab() {
-
-// }
-
 
 function addSlides(beacons) {
   for(let slide of beacons) {
@@ -124,18 +36,18 @@ function addSlides(beacons) {
 // envoyée par le serveur, et qui correspond à la date de la
 // dernière modification effectuée sur la base de données.
 
-let selected = null;
-
-function addBookmarkToBox(boxId) {
+function addBookmark(selectedLocation) {
   console.log("Adding bookmark");
-  console.log("boxId:", boxId);
-  console.log("bookmarkInfos:", bookmarkInfos);
+  console.log("selectedLocation:", selectedLocation);
+  console.log("activeTab:", activeTab);
+  console.log("activeTab.url:", activeTab.url);
+  console.log("activeTab.title:", activeTab.title);
 
   let url = new URL('http://localhost:5000/addbm?');
   let params = {
-    url: bookmarkInfos.url,
-    title: bookmarkInfos.title,
-    boxId: boxId
+    url: activeTab.url,
+    title: activeTab.title,
+    boxId: selectedLocation.data.id
   }
 
   url.search = new URLSearchParams(params).toString();
@@ -144,6 +56,7 @@ function addBookmarkToBox(boxId) {
 
   fetch(url)
     .then(function(response) {
+      console.log("Done!");
       console.log("response:", response);
     });
 }
@@ -173,13 +86,15 @@ function addOption(parent, data) {
     opt.setAttribute('box-id', data.id);
     opt.addEventListener('click', function(event) {
       event.stopPropagation();
-      let lastOptions = document.getElementsByClassName('last-option');
-      for (let element of lastOptions) {
-        element.classList.remove('selected');
+      if (selectedLocation) {
+        selectedLocation.element.classList.remove('selected');
+        selectedLocation = null;
       }
       opt.classList.add('selected');
-      selected = data.id;
-      addBookmarkToBox(data.id);
+      selectedLocation = {
+        element: opt,
+        data: data
+      };
     });
   }
 
@@ -204,22 +119,7 @@ function addOption(parent, data) {
 
 window.addEventListener('unload', function() {
   console.log("unload!");
-  let lastOptions = document.getElementsByClassName('selected');
-  if (lastOptions.length == 0) return;
-
-  const boxId = lastOptions[0].getAttribute('box-id');
-  addBookmarkToBox(boxId);
+  if (selectedLocation) {
+    addBookmark(selectedLocation);
+  }
 });
-
-browser.tabs.
-  query({active: true, currentWindow: true})
-  .then(function(tabs) {
-    // console.log("tabs:", tabs);
-    // console.log("tabs[0]:", tabs[0]);
-    console.log("tabs[0].url:", tabs[0].url);
-    console.log("tabs[0].url:", tabs[0].url);
-    bookmarkInfos = {
-      title: tabs[0].title,
-      url: tabs[0].url,
-    }
-  });
