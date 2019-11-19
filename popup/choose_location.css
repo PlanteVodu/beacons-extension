@@ -1,8 +1,18 @@
 body {
   width: 400px;
-  height: 350px;
+  height: 452px;
   padding: 0;
+  margin: 0;
   font-family: "Tahoma";
+  background-color: #4a4a4f;
+  color: white;
+}
+
+.form-title {
+	font-size: 14px;
+	text-align: center;
+	padding: 12px;
+	border-bottom: 2px solid #606060;
 }
 
 form {
@@ -13,7 +23,7 @@ label, input, select {
 	clear: both;
 	display: block;
 	margin: 8px;
-	width: 80%;
+	width: 96%;
 	box-sizing: border-box;
 }
 
@@ -24,7 +34,7 @@ option {
 }
 
 label {
-	font-size: 15px;
+	font-size: 14px;
 }
 
 input, select {
@@ -37,10 +47,12 @@ input, select.location_recent_folders {
 
 .location_all_folders {
 	height: 164px;
-	width: 80%;
+	width: 96%;
+	color: #0c0c0d;
+	background-color: white;
 	border: 1px solid #737373;
 	box-sizing: border-box;
-	margin: 8px;
+	margin: 12px 8px 8px;
 	overflow: auto;
 }
 
@@ -91,24 +103,35 @@ input, select.location_recent_folders {
 
 button {
 	border: 0;
+	cursor: pointer;
 }
 
 .add-bookmark {
 	width: 50%;
 	height: 40px;
 	color: white;
-	background-color: #0060df;
+	background-color: #0a84ff;
+	border: 1px solid #42a0ff;
 	position: absolute;
 	bottom: 0;
 	left: 0;
+}
+
+.add-bookmark:hover {
+	background-color: #45a1ff;
 }
 
 .remove-bookmark {
 	width: 50%;
 	height: 40px;
 	color: white;
-	background-color: #6d6d71;
+	background-color: #d70022;
+	border: 1px solid #e7566d;
 	position: absolute;
 	bottom: 0;
 	right: 0;
+}
+
+.remove-bookmark:hover {
+	background-color: #ff0039;
 }
