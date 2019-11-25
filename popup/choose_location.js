@@ -1,20 +1,21 @@
 console.log('Pop-up is loading!');
 
-var activeTab;
-var parentId;
-var beacons;
+var activeTab; // browser's active tab
+var beacons; // beacons retrieved from the server
+
+var parentId; // the value of this variable will be sent to the server
 
 var titleInput = document.getElementById('title');
 var urlInput = document.getElementById('url');
 var iconInput = document.getElementById('icon');
 var parentInput = document.getElementById('parent-id');
 
-var allFolders = document.getElementById('all-folders');
-var selectedFolder;
-var recentFolders = document.getElementById('recent-folders');
-var iconElement = document.getElementById('icon');
-var parentElement = document.getElementById('parent-id');
 
+var recentFolders = document.getElementById('recent-folders');
+var allFolders = document.getElementById('all-folders');
+var selectedLocation; // the selected element inside the allFolders element
+
+// Method called when the popup loads
 function main() {
   setBookmarkInfos();
   setRecentLocations();
@@ -39,6 +40,8 @@ function fillBookmarkInfos() {
   iconInput.value = activeTab.favIconUrl;
 }
 
+// Retrieve recent locations from the server and add them as option
+// into the form
 function setRecentLocations() {
   const url = 'http://localhost:5001/lastbookmarkslocations';
   fetch(url)
@@ -53,11 +56,13 @@ function setRecentLocations() {
 function fillRecentLocations(locations) {
   recentFolders.innerHTML = '';
 
+  // Add the 'others' option
   const otherLocation = document.createElement('option');
   otherLocation.value = 'other';
   otherLocation.innerHTML = 'Autres...';
   recentFolders.append(otherLocation);
 
+  // Add recent locations options
   for (let location of locations) {
     const option = document.createElement('option');
     option.value = location.id;
@@ -65,6 +70,7 @@ function fillRecentLocations(locations) {
     recentFolders.append(option);
   }
 
+  // Select the default option
   if (recentFolders.options[recentFolders.selectedIndex].value != null) {
     recentFolders.selectedIndex = 1;
     parentId = recentFolders.options[recentFolders.selectedIndex].value;
@@ -72,23 +78,19 @@ function fillRecentLocations(locations) {
   }
 
   recentFolders.onchange = function() {
-    if (this.options[this.selectedIndex].value !== 'other') {
-      parentId = this.options[this.selectedIndex].value;
-      parentInput.value = parentId;
-      console.log("recentFolders: new parentId:", parentId);
-      allFolders.style.display = 'none';
-    } else {
+    if (this.options[this.selectedIndex].value === 'other') {
       if (beacons == null) {
         setBeacons();
       }
       allFolders.style.display = 'block';
-      // const selected = allFolders.getElementByClass('selected');
-      // if (selected.length > 0) {
-      //   selectedLocation = {
-      //     element: selected[0],
-      //     data = selected[0]
-      //   };
-      // }
+      if (selectedLocation) {
+        // Set the previous selected location in allFolders as the new location
+        parentInput.value = selectedLocation.getAttribute('box-id');
+      }
+    } else {
+      parentInput.value = this.options[this.selectedIndex].value;
+      console.log("recentFolders: new parent id:", parentInput.value);
+      allFolders.style.display = 'none';
     }
   };
 }
@@ -107,36 +109,6 @@ function setBeacons() {
         };
       });
     });
-}
-
-// Rafraîchir la liste des bookmarks à chaque fois que l'on ouvre
-// le pop-up. Le pop-up doit fermer lorsqu'on change d'onglet.
-// Mise à jour : conserver la date de dernière mise à jour
-// envoyée par le serveur, et qui correspond à la date de la
-// dernière modification effectuée sur la base de données.
-
-function addBookmark() {
-  console.group("Adding bookmark");
-
-  const url = new URL('http://localhost:5001/bookmarks');
-  const params = {
-    name: titleInput.value,
-    url: urlInput.value,
-    icon: activeTab.favIconUrl,
-    parent_id: parentId
-  };
-  console.log("params:", params);
-  // url.search = new URLSearchParams(params).toString();
-  console.log("url:", url);
-  console.groupEnd();
-
-  fetch(url, { method: 'POST', body: JSON.stringify(params) })
-    .then(function(response) {
-      window.close();
-      console.log("Done!");
-      console.log("response:", response);
-    })
-    .catch(error => console.error(error));
 }
 
 function addOption(parent, data) {
@@ -166,13 +138,9 @@ function addOption(parent, data) {
         selectedLocation = null;
       }
       opt.classList.add('selected');
-      selectedLocation = {
-        element: opt,
-        data: data
-      };
-      parentId = data.id;
-      parentInput.value = parentId;
-      console.log("allFolders: new parentId:", parentId);
+      selectedLocation = opt;
+      parentInput.value = data.id;
+      console.log("allFolders: new parentInput.value:", parentInput.value);
     });
   }
 
@@ -195,27 +163,17 @@ function addOption(parent, data) {
   parent.appendChild(container);
 }
 
-// window.addEventListener('unload', function() {
-//   console.log("unload!");
-//   if (parentId != null) {
-//     addBookmark();
-//   }
-// });
-
-document.getElementById('form').addEventListener('submit', function(form) {
-  var formData = new FormData(this);
+// Submit form and close the pop-up
+document.getElementById('form').addEventListener('submit', function(event) {
   event.preventDefault();
-  console.log("Submitting!");
-  console.log("this:", this);
-  console.log("formData:", formData);
-
+  console.group("Submitting!");
   console.log('titleInput.value:', titleInput.value);
   console.log('urlInput.value:', urlInput.value);
   console.log('iconInput.value:', iconInput.value);
   console.log('parentInput.value:', parentInput.value);
-  this.submit(function(event) {
-    // event.preventDefault();
-  });
+
+  this.submit();
+
   setTimeout(function() {
     browser.browserAction.setIcon({
       path: { 32: "../icons/icon-added.png" },
@@ -224,38 +182,7 @@ document.getElementById('form').addEventListener('submit', function(form) {
     console.log("Submitted!");
     window.close();
   }, 10);
-  // addBookmark();
+  console.groupEnd();
 });
-
-// document.getElementById('add-bookmark-btn').addEventListener('click', function() {
-//   console.log("send()");
-
-//   const url = 'http://localhost:5001/bookmarks';
-//   const params = {
-//     name: titleInput.value,
-//     url: urlInput.value,
-//     icon: iconInput.value,
-//     parent_id: parentInput.value
-//   };
-//   // console.log("params:", params);
-//   // url.search = new URLSearchParams(params).toString();
-//   // console.log("url:", url);
-//   // console.groupEnd();
-
-//   fetch(url, {
-//       method: 'POST',
-//       body: JSON.stringify(params),
-//       headers: {
-//         'Accept': 'application/json',
-//         'Content-Type': 'application/json'
-//       },
-//     })
-//     .then(function(response) {
-//       console.log("Done!");
-//       console.log("response:", response);
-//       window.close();
-//     })
-//     .catch(error => console.error(error));
-// });
 
 main();
