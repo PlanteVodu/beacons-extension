@@ -6,21 +6,20 @@
 </head>
 <body>
   <div class="form-title">Modifier ce marque-page</div>
-  <form>
+  <form id="form" action="http://localhost:5001/bookmarks" method="POST" target="hidden-frame">
     <label for="title">Titre :</label>
-    <input type="text" name="title" id="title" placeholder="Titre"></input>
+    <input type="text" name="name" id="title" placeholder="Titre">
     <label for="url">Adresse :</label>
-    <input type="text" name="url" id="url" placeholder="Adresse"></input>
+    <input type="text" name="url" id="url" placeholder="Adresse">
+    <input type="hidden" name="icon" id="icon">
+    <input type="hidden" name="parent_id" id="parent-id">
     <label for="location">Dossier :</label>
-    <select name="location_recent_folders" class="location_recent_folders">
-      <option value="">Web</option>
-      <option value="">Général</option>
-      <option value="">Python</option>
-    </select>
-    <div id="location_all_folder" class="location_all_folders"></div>
-    <input type="submit" class="add-bookmark" value="Ajouter">
-    <button class="remove-bookmark">Supprimer</button>
+    <select class="recent-folders" id="recent-folders"></select>
+    <div class="all-folders" id="all-folders" style="display: none"></div>
+    <button class="add-bookmark" id="add-bookmark-btn">Ajouter</button>
+    <button class="remove-bookmark" id="remove-bookmark-btn">Supprimer</button>
   </form>
+  <iframe name="hidden-frame" style="display: none">
   <script src="choose_location.js"></script>
 </body>
 </html>

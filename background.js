@@ -45,10 +45,10 @@ function updateActiveTab(tabs) {
   }
 
   function searchBookmark() {
-    const url = `http://localhost:5000/bmexists?url=${currentTab.url}`;
+    const url = `http://localhost:5001/bookmarks?url=${currentTab.url}`;
     fetch(url).then(function(response) {
-      response.json().then(function(exists) {
-        bookmarkExists = JSON.parse(exists);
+      response.json().then(function(res) {
+        bookmarkExists = res.length > 0;
         updateIcon();
       });
     });

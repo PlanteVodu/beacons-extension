@@ -42,11 +42,11 @@ input, select {
 	padding-left: 4px;
 }
 
-input, select.location_recent_folders {
+input, select.recent-folders {
 	height: 24px;
 }
 
-.location_all_folders {
+.all-folders {
 	height: 164px;
 	width: 96%;
 	color: #0c0c0d;
