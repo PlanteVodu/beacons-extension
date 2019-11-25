@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
   "name": "Beacons",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "A button to add/remove bookmarks from Beacons",
   "icons": {
-    "24": "icons/icon-beacon.png"
+    "32": "icons/icon-added.png"
   },
   "browser_action": {
-    "default_icon": "icons/icon-empty.png",
+    "default_icon": "icons/icon-absent.png",
     "default_title": "Beacons",
     "default_popup": "popup/choose_location.html"
   },

@@ -8,9 +8,9 @@ var bookmarkExists;
 function updateIcon() {
   browser.browserAction.setIcon({
     path: bookmarkExists ? {
-      24: "icons/icon-beacon.png",
+      32: "icons/icon-added.png",
     } : {
-      24: "icons/icon-empty.png",
+      32: "icons/icon-absent.png",
     },
     tabId: currentTab.id
   });
