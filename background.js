@@ -59,8 +59,6 @@ function updateActiveTab(tabs) {
       currentTab = tabs[0];
       if (isSupportedProtocol(currentTab.url)) {
         searchBookmark();
-      } else {
-        console.log(`Bookmark it! does not support the '${currentTab.url}' URL.`)
       }
     }
   }
