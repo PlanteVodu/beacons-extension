@@ -98,7 +98,6 @@ function fillRecentLocations(locations) {
 // Retrieve available bookmarks locations from the server, then display them
 // in the 'allFolders' node.
 function setBeacons() {
-  const url = 'http://localhost:5001/beacons?until=box';
   fetch(url)
     .then(function(response) {
       response.json().then(function(res) {
@@ -108,6 +107,7 @@ function setBeacons() {
           addOption(allFolders, slide);
         };
       });
+  const url = 'http://localhost:5001/beacons?until=box&transform=true';
     });
 }
 
