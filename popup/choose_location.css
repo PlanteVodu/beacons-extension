@@ -30,7 +30,6 @@ label, input, select {
 option {
 	box-sizing: border-box;
 	vertical-align: middle;
-
 }
 
 label {
@@ -47,7 +46,7 @@ input, select.recent-folders {
 }
 
 .all-folders {
-	height: 164px;
+	height: 188px;
 	width: 96%;
 	color: #0c0c0d;
 	background-color: white;

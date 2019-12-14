@@ -14,6 +14,7 @@ var parentInput = document.getElementById('parent-id');
 var recentFolders = document.getElementById('recent-folders');
 var allFolders = document.getElementById('all-folders');
 var selectedLocation; // the selected element inside the allFolders element
+var storage;
 
 // Method called when the popup loads
 function main() {
@@ -98,35 +99,52 @@ function fillRecentLocations(locations) {
 // Retrieve available bookmarks locations from the server, then display them
 // in the 'allFolders' node.
 function setBeacons() {
-  fetch(url)
-    .then(function(response) {
-      response.json().then(function(res) {
-        beacons = res;
-        console.log("beacons:", beacons);
-        for(let slide of beacons) {
-          addOption(allFolders, slide);
-        };
-      });
   const url = 'http://localhost:5001/beacons?until=box&transform=true';
+  Promise.all([
+    fetch(url).then(res => res.json()),
+    browser.storage.local.get(),
+  ])
+    .then(responses => {
+      [beacons, storage] = responses;
+      console.log("beacons:", beacons);
+      console.log("storage:", storage);
+      for(let slide of beacons) {
+        allFolders.appendChild(addOption(slide, ''));
+      }
     });
 }
 
-function addOption(parent, data) {
+function addOption(data, parentId) {
   let container = document.createElement('div');
 
   let opt = document.createElement('div');
   opt.classList.add('option');
+
+  if (parentId) parentId += '-';
+  opt.id = `${parentId}${data.id}`;
 
   if (data.content) {
     opt.addEventListener('click', function(event) {
       event.stopPropagation();
       container.classList.toggle('opened');
       opt.classList.toggle('opened');
+      if (opt.classList.contains('opened')) {
+        browser.storage.local.set({ [opt.id]: true }).catch(err => console.error(err));
+      } else {
+        browser.storage.local.remove(opt.id);
+      }
     });
 
     let optToggler = document.createElement('div');
     optToggler.innerHTML = '❯';
     optToggler.classList.add('folder-icon');
+
+    // Open previously opened folders
+    if (storage[opt.id] === true) {
+      container.classList.add('opened');
+      opt.classList.add('opened');
+    }
+
     opt.appendChild(optToggler);
   } else {
     opt.classList.add('last-option');
@@ -155,12 +173,12 @@ function addOption(parent, data) {
     let folderContainer = document.createElement('div');
     folderContainer.classList.add('folder');
     for(let folder of data.content) {
-      addOption(folderContainer, folder);
+      folderContainer.appendChild(addOption(folder, opt.id));
     };
     container.appendChild(folderContainer);
   }
 
-  parent.appendChild(container);
+  return container;
 }
 
 // Submit form and close the pop-up
