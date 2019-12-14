@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Beacons",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A button to add/remove bookmarks from Beacons",
   "icons": {
     "32": "icons/icon-added.png"
